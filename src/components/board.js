@@ -1,6 +1,17 @@
 import React, { Component } from "react";
-export class Board extends Component {
-  render() {
-    return <> Board </>;
-  }
+import PropTypes from "prop-types";
+
+export const Board = ({ cards }) => {
+  return (
+    <div>
+      Board!!
+    {cards.map(card => {
+      return <div> {card}</div>;
+    })}
+    </div>
+  )
 }
+
+Board.propTypes = {
+  cards: PropTypes.array.isRequired
+};
