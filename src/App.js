@@ -9,48 +9,140 @@ class App extends Component {
     super(props);
     this.state = {
       whichPlayerTurn: 1,
-      playerSelectedCard: {
-        1: "",
-        2: ""
-      },
-      playerOneInDeck: ["Dragon", "Ball", "GT", "Z"],
-      playerTwoInDeck: ["Akira", "Digimon", "Pokemon", "Pokedex"],
-      playerOneInPlay: [],
-      playerTwoInPlay: []
+      playerOneSelectedCard: {},
+      playerTwoSelectedCard: {},
+      playerOneInDeck: [{ name: "Goku" }, { name: "Vegeta" }, { name: "Cell" }],
+      playerTwoInDeck: [
+        { name: "Squall" },
+        { name: "Seifer" },
+        { name: "Zell" }
+      ],
+      playerOneCardsPlayed: [],
+      playerTwoCardsPlayed: [],
+      cardsInPlay: [
+        [{ name: "None" }, { name: "None" }, { name: "None" }],
+        [{ name: "None" }, { name: "None" }, { name: "None" }],
+        [{ name: "None" }, { name: "None" }, { name: "None" }]
+      ]
     };
-
-    this.playCard = this.playCard.bind(this);
-    
   }
 
-  playCard = (card, playerNum) => {
-    let playerSelectedCard = { ...this.state.playerSelectedCard };
-    playerSelectedCard[playerNum] = card
-    this.setState({
-      playerSelectedCard
-    })
-  }
+  selectCard = (card, playerNum) => {
+    switch (playerNum) {
+      case "1":
+        this.setState({
+          playerOneSelectedCard: Object.assign(
+            {},
+            this.state.playerOneSelectedCard,
+            card
+          )
+        });
+        break;
+      case "2":
+        this.setState({
+          playerTwoSelectedCard: Object.assign(
+            {},
+            this.state.playerTwoSelectedCard,
+            card
+          )
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  playCard = (row, column) => {
+    // need to refactor here
+    let { whichPlayerTurn, cardsInPlay } = this.state;
+    if (whichPlayerTurn === 1) {
+      if (this.state.playerOneSelectedCard.name) {
+        //insert the card
+        cardsInPlay[row][column] = {
+          ...this.state.playerOneSelectedCard,
+          player: "player1"
+        };
+
+        this.setState({
+          ...this.state,
+          cardsInPlay
+        });
+
+        // remove from deck and remove from selected & next player turn
+        this.setState({
+          playerOneInDeck: this.state.playerOneInDeck.filter(card => {
+            return card.name !== this.state.playerOneSelectedCard.name;
+          }),
+          playerOneSelectedCard: {},
+          whichPlayerTurn: 2
+        });
+      } else {
+        alert(`Player ${whichPlayerTurn} did not select any card to play`);
+      }
+    } else {
+      if (this.state.playerTwoSelectedCard.name) {
+        cardsInPlay[row][column] = {
+          ...this.state.playerTwoSelectedCard,
+          player: "player2"
+        };
+
+        this.setState({
+          ...this.state,
+          cardsInPlay
+        });
+
+        // remove from deck and remove from selected & next player turn
+        this.setState({
+          playerTwoInDeck: this.state.playerTwoInDeck.filter(card => {
+            return card.name !== this.state.playerTwoSelectedCard.name;
+          }),
+          playerTwoSelectedCard: {},
+          whichPlayerTurn: 1
+        });
+      } else {
+        alert(`Player ${whichPlayerTurn} did not select any card to play`);
+      }
+    }
+  };
 
   render() {
     return (
       <div className="App">
-        <button
-          onClick={() => {
-            this.setState({
-              playerOneInPlay: this.state.playerOneInPlay.concat(2)
-            })
-          }}>
-          Add?
-        </button>
-        <Board
-          cards={this.state.playerOneInPlay.concat(this.state.playerTwoInPlay)}
+        <Deck
+          cards={this.state.playerOneInDeck}
+          selectCard={this.selectCard}
+          playerNum={"1"}
         />
-        <Card />
-        <Deck cards={this.state.playerOneInDeck} playCard={this.playCard} playerNum={"1"} />
-        <Deck cards={this.state.playerTwoInDeck} playCard={this.playCard} playerNum={"2"} />
+        <Board cards={this.state.cardsInPlay} playCard={this.playCard} />
+        <Deck
+          cards={this.state.playerTwoInDeck}
+          selectCard={this.selectCard}
+          playerNum={"2"}
+        />
       </div>
     );
   }
+
+  // render() {
+  //   return (
+  //     <div className="App">
+  //       <button
+  //         onClick={() => {
+  //           this.setState({
+  //             playerOneInPlay: this.state.playerOneInPlay.concat(2)
+  //           })
+  //         }}>
+  //         Add?
+  //       </button>
+  //       <Board
+  //         cards={this.state.playerOneInPlay.concat(this.state.playerTwoInPlay)}
+  //       />
+  //       <Card />
+  //       <Deck cards={this.state.playerOneInDeck} playCard={this.playCard} playerNum={"1"} />
+  //       <Deck cards={this.state.playerTwoInDeck} playCard={this.playCard} playerNum={"2"} />
+  //     </div>
+  //   );
+  // }
 }
 
 export default App;
