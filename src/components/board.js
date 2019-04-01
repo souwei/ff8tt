@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import { Card } from "./card";
 import "./board.css";
 
 export const Board = ({ cards, playCard }) => {
@@ -16,6 +17,7 @@ export const Board = ({ cards, playCard }) => {
                     onClick={playCard.bind(null, index, idx)}
                   >
                     {card.name}
+                    {card.player && <Card details={card} />}
                   </div>
                 );
               })}

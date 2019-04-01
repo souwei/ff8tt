@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
 import { Board } from "./components/board";
-import { Card } from "./components/card";
 import { Deck } from "./components/deck";
 
 class App extends Component {
@@ -11,11 +10,15 @@ class App extends Component {
       whichPlayerTurn: 1,
       playerOneSelectedCard: {},
       playerTwoSelectedCard: {},
-      playerOneInDeck: [{ name: "Goku" }, { name: "Vegeta" }, { name: "Cell" }],
+      playerOneInDeck: [
+        { name: "Goku", up: 1, down: 9, left: 3, right: 4 },
+        { name: "Vegeta", up: 3, down: 3, left: 3, right: 2 },
+        { name: "Cell", up: 2, down: 8, left: 2, right: 1 }
+      ],
       playerTwoInDeck: [
-        { name: "Squall" },
-        { name: "Seifer" },
-        { name: "Zell" }
+        { name: "Squall", up: 3, down: 9, left: 3, right: 4 },
+        { name: "Seifer", up: 2, down: 2, left: 9, right: 9 },
+        { name: "Zell", up: 3, down: 1, left: 2, right: 1 }
       ],
       playerOneCardsPlayed: [],
       playerTwoCardsPlayed: [],
@@ -54,6 +57,7 @@ class App extends Component {
 
   playCard = (row, column) => {
     // need to refactor here
+
     let { whichPlayerTurn, cardsInPlay } = this.state;
     if (whichPlayerTurn === 1) {
       if (this.state.playerOneSelectedCard.name) {
